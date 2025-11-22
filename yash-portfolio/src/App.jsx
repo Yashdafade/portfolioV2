@@ -270,7 +270,7 @@ const App = () => {
             <SkillCard 
               icon={<Cloud size={32} className="text-purple-400" />}
               title="Cloud & DevOps"
-              skills={["Docker & Containerization", "GitHub Actions (CI/CD)", "Linux (Ubuntu) Administration", "AWS (Learning)", "Nginx/Caddy Proxy"]}
+              skills={["Docker & Containerization", "GitHub Actions (CI/CD)", "Linux (Ubuntu) Administration", "AWS Cloud Practioner", "Nginx/Caddy Proxy"]}
             />
             <SkillCard 
               icon={<Database size={32} className="text-emerald-400" />}
@@ -335,9 +335,9 @@ const App = () => {
                     A showcase of full-stack architectures, AI integration, and DevOps implementations.
                 </p>
             </div>
-            <a href="https://github.com" className="hidden md:flex items-center gap-2 text-blue-400 hover:text-white transition-colors">
+            {/* <a href="https://github.com" className="hidden md:flex items-center gap-2 text-blue-400 hover:text-white transition-colors">
                 View all on Github <ExternalLink size={16} />
-            </a>
+            </a> */}
           </div>
 
           <div className="space-y-20">
@@ -415,9 +415,9 @@ const App = () => {
             </div>
 
             <div className="mt-16 pt-8 border-t border-slate-800 flex justify-center gap-8 text-slate-500">
-                <a href="#" className="hover:text-white transition-colors">LinkedIn</a>
-                <a href="#" className="hover:text-white transition-colors">GitHub</a>
-                <a href="#" className="hover:text-white transition-colors">Download Resume</a>
+                <a href="https://www.linkedin.com/in/yash-dafade-992ab2209/" className="hover:text-white transition-colors">LinkedIn</a>
+                <a href="https://github.com/yashdafade" className="hover:text-white transition-colors">GitHub</a>
+                <a href="https://drive.google.com/file/d/1Z3fj6m3iP4p1WEo-Dj64uZ0Vvp1Mrg_w/view" className="hover:text-white transition-colors">Download Resume</a>
             </div>
             <p className="mt-8 text-xs text-slate-600">
                 © 2025 Yash Dafade. Built with React & Three.js.
