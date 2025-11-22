@@ -184,7 +184,7 @@ const App = () => {
         <div className="max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-8 animate-fade-in-up">
             <div className="inline-block px-3 py-1 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs font-semibold tracking-wider uppercase">
-              Available for Hire
+              Available for Backend & DevOps Roles
             </div>
             <h1 className="text-5xl md:text-7xl font-bold leading-tight text-white">
               Yash Dafade
