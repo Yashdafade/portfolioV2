@@ -1,11 +1,34 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Github, Linkedin, Mail, Server, Database, Cpu, Cloud, Terminal, Globe, ChevronDown, ExternalLink, Code, Box, Phone, Layers, Lock, Zap } from 'lucide-react';
+import { Github, Linkedin, Mail, Server, Database, Cpu, Cloud, Terminal, Globe, ChevronDown, ExternalLink, Box, Phone, Layers, Lock, Zap } from 'lucide-react';
 
 /**
  * PORTFOLIO FOR YASH DAFADE - ANIMATED & MODERNIZED
  * Theme: Cyber-Minimalist (Deep Slate, Electric Blue, Violet)
- * Update: Dynamic Background Shifting & Enhanced Motion
+ * Updates: White Flash Fix, Consistent Hero Animations
  */
+
+// --- Experience Calculator Logic ---
+const getExperienceDuration = () => {
+  const startDate = new Date("2025-01-20");
+  const currentDate = new Date();
+  
+  // Calculate total months difference
+  let months = (currentDate.getFullYear() - startDate.getFullYear()) * 12;
+  months -= startDate.getMonth();
+  months += currentDate.getMonth();
+  
+  // Adjust if current day is before start day
+  if (currentDate.getDate() < startDate.getDate()) {
+    months--;
+  }
+
+  if (months <= 0) return "Just Joined";
+  if (months < 12) return `${months} Month${months !== 1 ? 's' : ''}`;
+  
+  // If > 1 year, use decimal format (e.g., 1.5 Years)
+  const years = months / 12;
+  return `${years.toFixed(1)} Years`;
+};
 
 // --- Custom Hook for Scroll Animations ---
 const useScrollReveal = (threshold = 0.1) => {
@@ -47,23 +70,14 @@ const DynamicBackground = () => {
       const height = document.body.scrollHeight - window.innerHeight;
       const progress = Math.min(Math.max(scrollY / height, 0), 1);
       
-      // Interpolate hues for a "Deep Space" shift effect
-      // 0.0 - 0.3: Deep Slate (Hero)
-      // 0.3 - 0.6: Midnight Indigo (Skills/Exp)
-      // 0.6 - 1.0: Dark Navy/Black (Projects/Contact)
-      
       let color1, color2;
 
-      // We'll manipulate two gradient stops
       if (progress < 0.5) {
-        // Shift from Slate-950 to Indigo-950
-        // Slate-950: #020617 (HSL: 222, 47%, 11%) -> Indigo-950: #1e1b4b (HSL: 243, 75%, 15%)
-        const p = progress * 2; // Normalize 0-0.5 to 0-1
+        const p = progress * 2;
         const hue = 222 + (243 - 222) * p;
         color1 = `hsl(${hue}, 40%, 8%)`; 
         color2 = `hsl(${hue + 20}, 40%, 5%)`;
       } else {
-        // Shift from Indigo-950 back to Slate-950/Black
         const p = (progress - 0.5) * 2;
         const hue = 243 - (243 - 222) * p;
         color1 = `hsl(${hue}, 40%, 8%)`;
@@ -74,7 +88,7 @@ const DynamicBackground = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Init
+    handleScroll(); 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -101,8 +115,6 @@ const ParticleNetwork = () => {
 
       const THREE = window.THREE;
       const scene = new THREE.Scene();
-      
-      // Fog for depth fading - kept dark to match all background states
       scene.fog = new THREE.FogExp2(0x000000, 0.002); 
 
       const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -112,16 +124,13 @@ const ParticleNetwork = () => {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       mountRef.current.appendChild(renderer.domElement);
 
-      // Create Particles
       const particlesGeometry = new THREE.BufferGeometry();
       const counts = 180;
-
       const positions = new Float32Array(counts * 3);
       const velocities = [];
 
       for (let i = 0; i < counts * 3; i++) {
         positions[i] = (Math.random() - 0.5) * 25; 
-        
         if (i % 3 === 0) velocities.push({
           x: (Math.random() - 0.5) * 0.008,
           y: (Math.random() - 0.5) * 0.008,
@@ -130,7 +139,6 @@ const ParticleNetwork = () => {
       }
 
       particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
       const particlesMaterial = new THREE.PointsMaterial({
         color: 0x3b82f6,
         size: 0.07,
@@ -141,10 +149,8 @@ const ParticleNetwork = () => {
 
       const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
       scene.add(particlesMesh);
-
       camera.position.z = 5;
 
-      // Mouse & Scroll Interaction
       let mouseX = 0;
       let mouseY = 0;
       let scrollY = 0;
@@ -153,36 +159,24 @@ const ParticleNetwork = () => {
         mouseX = (event.clientX / window.innerWidth) * 2 - 1;
         mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
       };
-      
-      const handleScroll = () => {
-        scrollY = window.scrollY;
-      };
+      const handleScroll = () => { scrollY = window.scrollY; };
 
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('scroll', handleScroll);
 
-      // Animation Loop
       const animate = () => {
         requestAnimationFrame(animate);
-
         const positions = particlesMesh.geometry.attributes.position.array;
-
-        // Rotate entire system based on time + scroll (Parallax effect)
         particlesMesh.rotation.y += 0.0005;
-        particlesMesh.rotation.x = scrollY * 0.0002; // Tilt based on scroll
-
-        // Interactive Camera sway
+        particlesMesh.rotation.x = scrollY * 0.0002;
         camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
-        camera.position.y += (-scrollY * 0.001 + mouseY * 0.5 - camera.position.y) * 0.05; // Move camera down with scroll
+        camera.position.y += (-scrollY * 0.001 + mouseY * 0.5 - camera.position.y) * 0.05;
         camera.lookAt(scene.position);
 
-        // Move particles individually
         for (let i = 0; i < counts; i++) {
             positions[i * 3] += velocities[i].x;
             positions[i * 3 + 1] += velocities[i].y;
             positions[i * 3 + 2] += velocities[i].z;
-
-            // Soft boundaries
             const range = 15;
             if (Math.abs(positions[i * 3]) > range) positions[i * 3] *= -0.9;
             if (Math.abs(positions[i * 3 + 1]) > range) positions[i * 3 + 1] *= -0.9;
@@ -194,7 +188,6 @@ const ParticleNetwork = () => {
       };
 
       animate();
-
       const handleResize = () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
@@ -209,11 +202,7 @@ const ParticleNetwork = () => {
         if (mountRef.current) mountRef.current.innerHTML = '';
       };
     };
-
-    return () => {
-      if (mountRef.current) mountRef.current.innerHTML = '';
-    }
-
+    return () => { if (mountRef.current) mountRef.current.innerHTML = ''; }
   }, []);
 
   return <div ref={mountRef} className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none" />;
@@ -222,6 +211,9 @@ const ParticleNetwork = () => {
 // --- Animations Styles (Injected) ---
 const GlobalStyles = () => (
   <style>{`
+    /* Fix for white flash on reload - set body background immediately */
+    body { background-color: #020617; color: #e2e8f0; }
+
     @keyframes float {
       0%, 100% { transform: translateY(0px) rotate(0deg); }
       50% { transform: translateY(-20px) rotate(2deg); }
@@ -235,8 +227,25 @@ const GlobalStyles = () => (
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
+    
+    /* New Entrance Animations */
+    @keyframes slideDown {
+      0% { transform: translateY(-100%); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes slideInRight {
+      0% { transform: translateX(100px); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes fadeScale {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
     .animate-float { animation: float 6s ease-in-out infinite; }
     .animate-float-delayed { animation: float-delayed 8s ease-in-out infinite; }
+    .animate-slide-down { animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-slide-in-right { animation: slideInRight 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
     
     .glass-panel {
       background: rgba(15, 23, 42, 0.4);
@@ -306,27 +315,37 @@ const Navbar = ({ scrollTo }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const navItems = ['About', 'Skills', 'Projects', 'Experience', 'Contact'];
+
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50 py-3 shadow-2xl' : 'bg-transparent py-5'}`}>
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50 py-3 shadow-2xl' : 'bg-transparent py-5'} animate-slide-down`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <div className="text-xl font-bold tracking-tighter text-slate-100 flex items-center gap-2 group cursor-pointer" onClick={() => scrollTo('hero')}>
+        {/* Logo Animation */}
+        <div 
+          className="text-xl font-bold tracking-tighter text-slate-100 flex items-center gap-2 group cursor-pointer opacity-0 animate-[slideDown_0.5s_ease-out_forwards_200ms]" 
+          onClick={() => scrollTo('hero')}
+        >
           <div className="p-1.5 bg-blue-600/20 rounded-lg group-hover:bg-blue-600/40 transition-colors">
             <Terminal size={20} className="text-blue-400" />
           </div>
           <span>Yash<span className="text-blue-500">.dev</span></span>
         </div>
+        
+        {/* Nav Links Animation */}
         <div className="hidden md:flex gap-8 text-sm font-medium text-slate-400">
-          {['About', 'Skills', 'Projects', 'Experience', 'Contact'].map((item) => (
+          {navItems.map((item, index) => (
             <button
               key={item}
               onClick={() => scrollTo(item.toLowerCase())}
-              className="hover:text-blue-400 transition-colors relative group py-1"
+              className="hover:text-blue-400 transition-colors relative group py-1 opacity-0"
+              style={{ animation: `slideDown 0.5s ease-out forwards ${300 + (index * 100)}ms` }}
             >
               {item}
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
             </button>
           ))}
         </div>
+        
         <div className="md:hidden text-slate-400">
           <Box size={24} />
         </div>
@@ -395,8 +414,8 @@ const Hero = ({ scrollTo }) => (
         </AnimatedSection>
       </div>
 
-      {/* Hero Visual - Animated 3D-ish Cards */}
-      <div className="hidden md:flex justify-center items-center relative h-[500px]">
+      {/* Hero Visual - Animated 3D-ish Cards with Consistent "Reveal" Animation */}
+      <AnimatedSection delay={600} className="hidden md:flex justify-center items-center relative h-[500px]">
         {/* Central Hub */}
         <div className="relative z-10 w-full max-w-md aspect-square animate-float">
           <div className="absolute inset-0 border border-slate-700 rounded-full border-dashed animate-[spin_30s_linear_infinite] opacity-20"></div>
@@ -436,7 +455,7 @@ const Hero = ({ scrollTo }) => (
             <Terminal size={40} className="text-white group-hover:text-blue-400 transition-colors" />
           </div>
         </div>
-      </div>
+      </AnimatedSection>
     </div>
 
     <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-slate-500 animate-bounce cursor-pointer hover:text-white transition-colors" onClick={() => scrollTo('about')}>
@@ -549,6 +568,7 @@ const Experience = () => (
           role="Assistant System Engineer"
           company="Tata Consultancy Services (TCS)"
           period="Jan 2025 - Present"
+          duration={getExperienceDuration()}
           points={[
             "Designed Power BI dashboards to visualize SLA adherence, incident trends, and DEG performance metrics, enabling data-driven decisions.",
             "Automated daily Excel-based reporting tasks using Python scripts, reducing manual workload by 70%.",
@@ -560,7 +580,7 @@ const Experience = () => (
   </section>
 );
 
-const ExperienceItem = ({ role, company, period, points }) => (
+const ExperienceItem = ({ role, company, period, duration, points }) => (
   <AnimatedSection className="relative pl-8 md:pl-12 group">
     {/* Timeline Dot */}
     <span className="absolute -left-[9px] top-0 w-5 h-5 bg-slate-950 rounded-full border-4 border-blue-600 shadow-[0_0_0_4px_rgba(15,23,42,1)] group-hover:scale-150 group-hover:border-white transition-all duration-300"></span>
@@ -571,8 +591,14 @@ const ExperienceItem = ({ role, company, period, points }) => (
           <h3 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">{role}</h3>
           <h4 className="text-lg text-slate-400 font-medium mt-1">{company}</h4>
         </div>
-        <div className="px-4 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-300 text-xs font-mono font-bold uppercase tracking-wider whitespace-nowrap">
-          {period}
+        <div className="flex flex-col items-end gap-1">
+          <div className="px-4 py-1.5 bg-slate-800 rounded-full text-slate-300 text-xs font-mono font-bold uppercase tracking-wider whitespace-nowrap border border-slate-700">
+            {period}
+          </div>
+          {/* Dynamic Experience Badge */}
+          <div className="px-3 py-1 bg-blue-600/20 border border-blue-500/30 rounded-full text-blue-300 text-[10px] font-bold uppercase tracking-widest shadow-[0_0_10px_rgba(37,99,235,0.2)]">
+            {duration}
+          </div>
         </div>
       </div>
       
@@ -759,7 +785,7 @@ const Contact = () => (
         <div className="flex gap-8">
            <a href="https://www.linkedin.com/in/yash-dafade-992ab2209/" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">LinkedIn</a>
            <a href="https://github.com/yashdafade" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">GitHub</a>
-           <a href="#" className="hover:text-white transition-colors">Resume</a>
+           <a href="https://drive.google.com/file/d/1Z3fj6m3iP4p1WEo-Dj64uZ0Vvp1Mrg_w/view?usp=drive_link" className="hover:text-white transition-colors">Resume</a>
         </div>
         <div className="text-sm">
           © 2025 Yash Dafade. Crafted with React & Three.js.
