@@ -4,7 +4,7 @@ import { Github, Linkedin, Mail, Server, Database, Cpu, Cloud, Terminal, Globe, 
 /**
  * PORTFOLIO FOR YASH DAFADE - ANIMATED & MODERNIZED
  * Theme: Cyber-Minimalist (Deep Slate, Electric Blue, Violet)
- * Updates: Confidential Project Badges
+ * Updates: Confidential Project Badges, Added 'About' Section Fix
  */
 
 // --- Experience Calculator Logic ---
@@ -205,7 +205,7 @@ const ParticleNetwork = () => {
     return () => { if (mountRef.current) mountRef.current.innerHTML = ''; }
   }, []);
 
-  return <div ref={mountRef} className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none" />;
+  return <div ref={mountRef} className="fixed inset-0 -z-10 pointer-events-none" />;
 };
 
 // --- Animations Styles (Injected) ---
@@ -482,6 +482,52 @@ const SocialLink = ({ href, icon }) => (
     {icon}
   </a>
 );
+
+// --- About Section (FIX: Added missing section for 'about' link) ---
+const StatItem = ({ value, label, icon }) => (
+  <div className="flex items-center gap-4 p-3 bg-slate-800/50 rounded-lg">
+    <div className="p-2 bg-blue-500/20 rounded-full text-blue-300">
+      {icon}
+    </div>
+    <div>
+      <div className="text-2xl font-extrabold text-white">{value}</div>
+      <div className="text-sm text-slate-400">{label}</div>
+    </div>
+  </div>
+);
+
+const AboutSection = () => (
+  <section id="about" className="py-32 px-6 bg-slate-900/10">
+    <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 items-center">
+      
+      {/* Visual / Summary Stats */}
+      <AnimatedSection className="md:col-span-1 space-y-8 p-6 glass-panel rounded-2xl h-full shadow-xl" delay={0}>
+        <h3 className="text-2xl font-bold text-blue-400 border-b border-slate-700 pb-3">My Core</h3>
+        <StatItem value="5+" label="Enterprise Projects" icon={<FileCode size={20} />} />
+        <StatItem value={getExperienceDuration()} label="Experience in Backend" icon={<Layers size={20} />} />
+        <StatItem value="90%+" label="Automation Success Rate" icon={<Zap size={20} />} />
+        <StatItem value="TCS" label="Current Employer" icon={<Box size={20} />} />
+      </AnimatedSection>
+
+      {/* Narrative Bio */}
+      <AnimatedSection className="md:col-span-2 space-y-6" delay={100}>
+        <h2 className="text-3xl md:text-5xl font-bold text-white">
+          Dedicated Backend Engineer
+        </h2>
+        <p className="text-xl text-slate-300 leading-relaxed">
+          As an Assistant System Engineer at TCS, I specialize in crafting robust, scalable backend solutions and optimizing system performance. My focus is on leveraging technologies like Node.js, Python, and cloud infrastructure to deliver high-availability, secure, and efficient applications.
+        </p>
+        <p className="text-lg text-slate-400 leading-relaxed border-l-4 border-blue-500/30 pl-4">
+          I thrive on complexity, translating intricate business requirements into elegant code architecture. From database optimization to implementing secure CI/CD pipelines with Docker and GitHub Actions, I ensure the entire system lifecycle is managed with precision. I am particularly interested in integrating AI/ML models into enterprise workflows to drive automation and intelligence.
+        </p>
+        <p className="text-lg text-slate-400 leading-relaxed">
+          The projects detailed in this portfolio showcase my ability to handle full-stack architectures, from high-performance APIs to crucial computer vision microservices, even when client confidentiality restricts public code access.
+        </p>
+      </AnimatedSection>
+    </div>
+  </section>
+);
+
 
 // --- About / Skills Section ---
 const Skills = () => (
@@ -837,6 +883,7 @@ const App = () => {
       <ParticleNetwork />
       <Navbar scrollTo={scrollTo} />
       <Hero scrollTo={scrollTo} />
+      <AboutSection /> 
       <Skills />
       <Experience />
       <Projects />
