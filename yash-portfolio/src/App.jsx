@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Github, Linkedin, Mail, Server, Database, Cpu, Cloud, Terminal, Globe, ChevronDown, ExternalLink, Box, Phone, Layers, Lock, Zap } from 'lucide-react';
+import { Github, Linkedin, Mail, Server, Database, Cpu, Cloud, Terminal, Globe, ChevronDown, ExternalLink, Box, Phone, Layers, Lock, Zap, FileCode } from 'lucide-react';
 
 /**
  * PORTFOLIO FOR YASH DAFADE - ANIMATED & MODERNIZED
  * Theme: Cyber-Minimalist (Deep Slate, Electric Blue, Violet)
- * Updates: White Flash Fix, Consistent Hero Animations
+ * Updates: Confidential Project Badges
  */
 
 // --- Experience Calculator Logic ---
@@ -640,6 +640,7 @@ const Projects = () => (
           impact="Reduced administrative workload by 50%."
           isLeft={true}
           icon={<Globe size={40} />}
+          confidential={true}
         />
 
         <ProjectCard
@@ -656,6 +657,7 @@ const Projects = () => (
           impact="Improved attendance efficiency by 70%."
           isLeft={false}
           icon={<Zap size={40} />}
+          confidential={true}
         />
 
         <ProjectCard
@@ -672,13 +674,14 @@ const Projects = () => (
           impact="Automated 80% of routine data lookup queries."
           isLeft={true}
           icon={<Lock size={40} />}
+          confidential={true}
         />
       </div>
     </div>
   </section>
 );
 
-const ProjectCard = ({ title, subtitle, tags, desc, features, impact, isLeft, icon }) => (
+const ProjectCard = ({ title, subtitle, tags, desc, features, impact, isLeft, icon, confidential = false }) => (
   <div className={`flex flex-col ${isLeft ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-12 lg:gap-20 items-center`}>
     
     {/* Visual Side */}
@@ -706,9 +709,16 @@ const ProjectCard = ({ title, subtitle, tags, desc, features, impact, isLeft, ic
         
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+          {confidential ? (
+            <div className="px-6 py-3 bg-slate-900/90 text-slate-300 font-bold rounded-full transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2 border border-slate-700 cursor-not-allowed shadow-xl">
+                <Lock size={16} className="text-amber-400"/> 
+                <span className="tracking-wide text-sm">Client Confidential</span>
+            </div>
+          ) : (
             <button className="px-6 py-3 bg-white text-slate-900 font-bold rounded-full transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2 hover:bg-blue-50">
                 View Details <ExternalLink size={16}/>
             </button>
+          )}
         </div>
       </div>
     </AnimatedSection>
@@ -716,7 +726,14 @@ const ProjectCard = ({ title, subtitle, tags, desc, features, impact, isLeft, ic
     {/* Content Side */}
     <AnimatedSection className="w-full lg:w-1/2 space-y-6" delay={200}>
       <div>
-        <h4 className="text-blue-400 font-bold tracking-wider uppercase text-sm mb-2">{subtitle}</h4>
+        <div className="flex items-center gap-3 mb-2">
+           <h4 className="text-blue-400 font-bold tracking-wider uppercase text-sm">{subtitle}</h4>
+           {confidential && (
+             <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/10 text-amber-500 border border-amber-500/20">
+               Confidential
+             </span>
+           )}
+        </div>
         <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 group-hover:text-blue-200 transition-colors">{title}</h3>
         <div className="flex flex-wrap gap-2 mb-6">
           {tags.map((tag, i) => (
@@ -785,7 +802,7 @@ const Contact = () => (
         <div className="flex gap-8">
            <a href="https://www.linkedin.com/in/yash-dafade-992ab2209/" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">LinkedIn</a>
            <a href="https://github.com/yashdafade" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">GitHub</a>
-           <a href="https://drive.google.com/file/d/1Z3fj6m3iP4p1WEo-Dj64uZ0Vvp1Mrg_w/view?usp=drive_link" className="hover:text-white transition-colors">Resume</a>
+           <a href="#" className="hover:text-white transition-colors">Resume</a>
         </div>
         <div className="text-sm">
           © 2025 Yash Dafade. Crafted with React & Three.js.
