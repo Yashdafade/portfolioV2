@@ -4,19 +4,66 @@ import { Github, Linkedin, Mail, Server, Database, Cpu, Cloud, Terminal, Globe, 
 /**
  * PORTFOLIO FOR YASH DAFADE - ANIMATED & MODERNIZED
  * Theme: Cyber-Minimalist (Deep Slate, Electric Blue, Violet)
- * Updates: Confidential Project Badges, Added 'About' Section Fix
+ * Updates: Added Typewriter Animation for Name/Roles
  */
+
+// --- Typewriter Component ---
+const Typewriter = ({ words, wait = 2000 }) => {
+  const [index, setIndex] = useState(0);
+  const [subIndex, setSubIndex] = useState(0);
+  const [reverse, setReverse] = useState(false);
+  const [blink, setBlink] = useState(true);
+
+  // Blinking cursor
+  useEffect(() => {
+    const timeout2 = setTimeout(() => {
+      setBlink((prev) => !prev);
+    }, 500);
+    return () => clearTimeout(timeout2);
+  }, [blink]);
+
+  // Typing logic
+  useEffect(() => {
+    if (index === words.length) return; // Should not happen with modulo logic below
+
+    // If word is fully typed
+    if (subIndex === words[index].length + 1 && !reverse) {
+      setTimeout(() => setReverse(true), wait);
+      return;
+    }
+
+    // If word is fully deleted
+    if (subIndex === 0 && reverse) {
+      setReverse(false);
+      setIndex((prev) => (prev + 1) % words.length);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      setSubIndex((prev) => prev + (reverse ? -1 : 1));
+    }, reverse ? 75 : 150); // Deleting is faster than typing
+
+    return () => clearTimeout(timeout);
+  }, [subIndex, index, reverse, words, wait]);
+
+  return (
+    <span className="inline-block">
+      {words[index].substring(0, subIndex)}
+      <span className={`inline-block w-[3px] h-[1em] bg-blue-500 ml-1 align-middle ${blink ? 'opacity-100' : 'opacity-0'}`}></span>
+    </span>
+  );
+};
 
 // --- Experience Calculator Logic ---
 const getExperienceDuration = () => {
   const startDate = new Date("2025-01-20");
   const currentDate = new Date();
-  
+
   // Calculate total months difference
   let months = (currentDate.getFullYear() - startDate.getFullYear()) * 12;
   months -= startDate.getMonth();
   months += currentDate.getMonth();
-  
+
   // Adjust if current day is before start day
   if (currentDate.getDate() < startDate.getDate()) {
     months--;
@@ -24,7 +71,7 @@ const getExperienceDuration = () => {
 
   if (months <= 0) return "Just Joined";
   if (months < 12) return `${months} Month${months !== 1 ? 's' : ''}`;
-  
+
   // If > 1 year, use decimal format (e.g., 1.5 Years)
   const years = months / 12;
   return `${years.toFixed(1)} Years`;
@@ -65,17 +112,17 @@ const DynamicBackground = () => {
   useEffect(() => {
     const handleScroll = () => {
       if (!bgRef.current) return;
-      
+
       const scrollY = window.scrollY;
       const height = document.body.scrollHeight - window.innerHeight;
       const progress = Math.min(Math.max(scrollY / height, 0), 1);
-      
+
       let color1, color2;
 
       if (progress < 0.5) {
         const p = progress * 2;
         const hue = 222 + (243 - 222) * p;
-        color1 = `hsl(${hue}, 40%, 8%)`; 
+        color1 = `hsl(${hue}, 40%, 8%)`;
         color2 = `hsl(${hue + 20}, 40%, 5%)`;
       } else {
         const p = (progress - 0.5) * 2;
@@ -88,7 +135,7 @@ const DynamicBackground = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); 
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -115,7 +162,7 @@ const ParticleNetwork = () => {
 
       const THREE = window.THREE;
       const scene = new THREE.Scene();
-      scene.fog = new THREE.FogExp2(0x000000, 0.002); 
+      scene.fog = new THREE.FogExp2(0x000000, 0.002);
 
       const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
       const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -130,7 +177,7 @@ const ParticleNetwork = () => {
       const velocities = [];
 
       for (let i = 0; i < counts * 3; i++) {
-        positions[i] = (Math.random() - 0.5) * 25; 
+        positions[i] = (Math.random() - 0.5) * 25;
         if (i % 3 === 0) velocities.push({
           x: (Math.random() - 0.5) * 0.008,
           y: (Math.random() - 0.5) * 0.008,
@@ -174,13 +221,13 @@ const ParticleNetwork = () => {
         camera.lookAt(scene.position);
 
         for (let i = 0; i < counts; i++) {
-            positions[i * 3] += velocities[i].x;
-            positions[i * 3 + 1] += velocities[i].y;
-            positions[i * 3 + 2] += velocities[i].z;
-            const range = 15;
-            if (Math.abs(positions[i * 3]) > range) positions[i * 3] *= -0.9;
-            if (Math.abs(positions[i * 3 + 1]) > range) positions[i * 3 + 1] *= -0.9;
-            if (Math.abs(positions[i * 3 + 2]) > range) positions[i * 3 + 2] *= -0.9;
+          positions[i * 3] += velocities[i].x;
+          positions[i * 3 + 1] += velocities[i].y;
+          positions[i * 3 + 2] += velocities[i].z;
+          const range = 15;
+          if (Math.abs(positions[i * 3]) > range) positions[i * 3] *= -0.9;
+          if (Math.abs(positions[i * 3 + 1]) > range) positions[i * 3 + 1] *= -0.9;
+          if (Math.abs(positions[i * 3 + 2]) > range) positions[i * 3 + 2] *= -0.9;
         }
 
         particlesMesh.geometry.attributes.position.needsUpdate = true;
@@ -294,8 +341,8 @@ const GlobalStyles = () => (
 const AnimatedSection = ({ children, className = "", delay = 0 }) => {
   const [ref, isVisible] = useScrollReveal(0.15);
   return (
-    <div 
-      ref={ref} 
+    <div
+      ref={ref}
       className={`reveal-hidden ${isVisible ? 'reveal-visible' : ''} ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
@@ -321,8 +368,8 @@ const Navbar = ({ scrollTo }) => {
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50 py-3 shadow-2xl' : 'bg-transparent py-5'} animate-slide-down`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         {/* Logo Animation */}
-        <div 
-          className="text-xl font-bold tracking-tighter text-slate-100 flex items-center gap-2 group cursor-pointer opacity-0 animate-[slideDown_0.5s_ease-out_forwards_200ms]" 
+        <div
+          className="text-xl font-bold tracking-tighter text-slate-100 flex items-center gap-2 group cursor-pointer opacity-0 animate-[slideDown_0.5s_ease-out_forwards_200ms]"
           onClick={() => scrollTo('hero')}
         >
           <div className="p-1.5 bg-blue-600/20 rounded-lg group-hover:bg-blue-600/40 transition-colors">
@@ -330,7 +377,7 @@ const Navbar = ({ scrollTo }) => {
           </div>
           <span>Yash<span className="text-blue-500">.dev</span></span>
         </div>
-        
+
         {/* Nav Links Animation */}
         <div className="hidden md:flex gap-8 text-sm font-medium text-slate-400">
           {navItems.map((item, index) => (
@@ -345,7 +392,7 @@ const Navbar = ({ scrollTo }) => {
             </button>
           ))}
         </div>
-        
+
         <div className="md:hidden text-slate-400">
           <Box size={24} />
         </div>
@@ -371,7 +418,7 @@ const Hero = ({ scrollTo }) => (
             Available for Hire
           </div>
         </AnimatedSection>
-        
+
         <AnimatedSection delay={100}>
           <h1 className="text-5xl md:text-7xl font-extrabold leading-tight text-white tracking-tight">
             Architecting <br />
@@ -379,10 +426,16 @@ const Hero = ({ scrollTo }) => (
           </h1>
         </AnimatedSection>
 
+        {/* UPDATED: Typewriter Animation Section */}
         <AnimatedSection delay={200}>
-          <h2 className="text-2xl md:text-3xl text-slate-400 font-light flex flex-col gap-2">
-            <span>Backend Engineer</span>
-            <span className="text-slate-500 text-xl md:text-2xl">& DevOps Practitioner</span>
+          <h2 className="text-2xl md:text-3xl text-slate-400 font-light flex flex-col gap-2 h-20 justify-center">
+            <span className="text-slate-500 text-xl">I am</span>
+            <span className="text-blue-400 font-semibold tracking-wide">
+              <Typewriter
+                words={["Yash Dafade", "A Backend Developer", "A DevOps Practitioner", "An AI Integrator"]}
+                wait={2500}
+              />
+            </span>
           </h2>
         </AnimatedSection>
 
@@ -420,36 +473,36 @@ const Hero = ({ scrollTo }) => (
         <div className="relative z-10 w-full max-w-md aspect-square animate-float">
           <div className="absolute inset-0 border border-slate-700 rounded-full border-dashed animate-[spin_30s_linear_infinite] opacity-20"></div>
           <div className="absolute inset-8 border border-slate-600 rounded-full border-dashed animate-[spin_20s_linear_infinite_reverse] opacity-20"></div>
-          
+
           {/* Floating Cards - enhanced hover */}
-          <FloatingCard 
-            icon={<Server size={28} className="text-blue-400" />} 
-            label="Backend" 
-            sub="Node / Python" 
-            className="top-10 left-10 animate-float-delayed" 
+          <FloatingCard
+            icon={<Server size={28} className="text-blue-400" />}
+            label="Backend"
+            sub="Node / Python"
+            className="top-10 left-10 animate-float-delayed"
           />
-          <FloatingCard 
-            icon={<Cloud size={28} className="text-purple-400" />} 
-            label="DevOps" 
-            sub="Docker / AWS" 
-            className="top-20 right-0 animate-float" 
+          <FloatingCard
+            icon={<Cloud size={28} className="text-purple-400" />}
+            label="DevOps"
+            sub="Docker / AWS"
+            className="top-20 right-0 animate-float"
             delay="1s"
           />
-          <FloatingCard 
-            icon={<Cpu size={28} className="text-emerald-400" />} 
-            label="AI / ML" 
-            sub="OpenCV / LLMs" 
-            className="bottom-20 left-0 animate-float" 
+          <FloatingCard
+            icon={<Cpu size={28} className="text-emerald-400" />}
+            label="AI / ML"
+            sub="OpenCV / LLMs"
+            className="bottom-20 left-0 animate-float"
             delay="2s"
           />
-          <FloatingCard 
-            icon={<Database size={28} className="text-orange-400" />} 
-            label="Data" 
-            sub="SQL / NoSQL" 
-            className="bottom-10 right-10 animate-float-delayed" 
+          <FloatingCard
+            icon={<Database size={28} className="text-orange-400" />}
+            label="Data"
+            sub="SQL / NoSQL"
+            className="bottom-10 right-10 animate-float-delayed"
             delay="3s"
           />
-          
+
           {/* Center Logo */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-slate-900 rounded-2xl border border-slate-700 shadow-2xl flex items-center justify-center z-20 group hover:border-blue-500 transition-colors duration-500">
             <Terminal size={40} className="text-white group-hover:text-blue-400 transition-colors" />
@@ -465,7 +518,7 @@ const Hero = ({ scrollTo }) => (
 );
 
 const FloatingCard = ({ icon, label, sub, className, delay }) => (
-  <div 
+  <div
     className={`absolute glass-panel p-4 rounded-xl flex items-center gap-4 shadow-lg w-48 transition-all hover:scale-110 hover:border-blue-500/50 cursor-default hover:shadow-[0_0_30px_rgba(59,130,246,0.2)] z-30 ${className}`}
     style={{ animationDelay: delay }}
   >
@@ -499,29 +552,33 @@ const StatItem = ({ value, label, icon }) => (
 const AboutSection = () => (
   <section id="about" className="py-32 px-6 bg-slate-900/10">
     <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 items-center">
-      
+
       {/* Visual / Summary Stats */}
       <AnimatedSection className="md:col-span-1 space-y-8 p-6 glass-panel rounded-2xl h-full shadow-xl" delay={0}>
         <h3 className="text-2xl font-bold text-blue-400 border-b border-slate-700 pb-3">My Core</h3>
-        <StatItem value="5+" label="Enterprise Projects" icon={<FileCode size={20} />} />
-        <StatItem value={getExperienceDuration()} label="Experience in Backend" icon={<Layers size={20} />} />
-        <StatItem value="90%+" label="Automation Success Rate" icon={<Zap size={20} />} />
+        <StatItem value="MERN" label="Stack Specialization" icon={<FileCode size={20} />} />
+        {/* Updated to reflect total dev time including Schoolix, not just TCS tenure */}
+        <StatItem value="1.5+ Years" label="Dev Journey (Since Mar '24)" icon={<Layers size={20} />} />
+        <StatItem value="50%" label="Productivity Boost (Schoolix)" icon={<Zap size={20} />} />
         <StatItem value="TCS" label="Current Employer" icon={<Box size={20} />} />
       </AnimatedSection>
 
-      {/* Narrative Bio */}
+      {/* Narrative Bio Rewritten from Resume */}
       <AnimatedSection className="md:col-span-2 space-y-6" delay={100}>
         <h2 className="text-3xl md:text-5xl font-bold text-white">
-          Dedicated Backend Engineer
+          Full Stack Developer & <br /> <span className="text-blue-500">Cloud Practitioner</span>
         </h2>
+
         <p className="text-xl text-slate-300 leading-relaxed">
-          As an Assistant System Engineer at TCS, I specialize in crafting robust, scalable backend solutions and optimizing system performance. My focus is on leveraging technologies like Node.js, Python, and cloud infrastructure to deliver high-availability, secure, and efficient applications.
+          I am a Full Stack Developer skilled in designing, building, and deploying scalable MERN-based applications with secure backend logic and AI-driven automation. My expertise lies in API design, database management, and setting up robust CI/CD pipelines.
         </p>
+
         <p className="text-lg text-slate-400 leading-relaxed border-l-4 border-blue-500/30 pl-4">
-          I thrive on complexity, translating intricate business requirements into elegant code architecture. From database optimization to implementing secure CI/CD pipelines with Docker and GitHub Actions, I ensure the entire system lifecycle is managed with precision. I am particularly interested in integrating AI/ML models into enterprise workflows to drive automation and intelligence.
+          I successfully developed and deployed <strong>Schoolix</strong>, a client-based school management platform featuring AI-powered attendance and an intelligent chatbot—improving administrative productivity by 50%.
         </p>
+
         <p className="text-lg text-slate-400 leading-relaxed">
-          The projects detailed in this portfolio showcase my ability to handle full-stack architectures, from high-performance APIs to crucial computer vision microservices, even when client confidentiality restricts public code access.
+          Proficient in Docker, GitHub Actions, and Linux-based deployments, I am currently enhancing my expertise in AWS, Kubernetes, and Terraform to build cloud-native, DevOps-ready systems. At TCS, I automate reporting workflows and visualize critical performance metrics.
         </p>
       </AnimatedSection>
     </div>
@@ -579,13 +636,13 @@ const SkillCard = ({ icon, title, desc, skills, delay }) => (
     <div className="glass-panel p-8 rounded-2xl h-full glass-card-hover transition-all duration-300 group relative overflow-hidden">
       {/* Subtle hover gradient bloom */}
       <div className="absolute -top-10 -right-10 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-      
+
       <div className="mb-6 p-4 bg-slate-900/50 rounded-xl inline-block border border-slate-800 group-hover:bg-slate-800 transition-colors group-hover:scale-110 duration-300 relative z-10">
         {icon}
       </div>
       <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors relative z-10">{title}</h3>
       <p className="text-slate-500 text-sm mb-6 h-10 relative z-10">{desc}</p>
-      
+
       <div className="space-y-3 pt-6 border-t border-slate-800 relative z-10">
         {skills.map((skill, idx) => (
           <div key={idx} className="flex items-center gap-3 text-sm text-slate-300">
@@ -604,13 +661,13 @@ const Experience = () => (
     <div className="max-w-4xl mx-auto">
       <AnimatedSection className="mb-16 flex items-center gap-4">
         <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
-           <Layers className="text-blue-400" size={24}/>
+          <Layers className="text-blue-400" size={24} />
         </div>
         <h2 className="text-3xl md:text-4xl font-bold text-white">Professional History</h2>
       </AnimatedSection>
 
       <div className="relative border-l-2 border-slate-800 ml-4 md:ml-10 space-y-16">
-        <ExperienceItem 
+        <ExperienceItem
           role="Assistant System Engineer"
           company="Tata Consultancy Services (TCS)"
           period="Jan 2025 - Present"
@@ -630,7 +687,7 @@ const ExperienceItem = ({ role, company, period, duration, points }) => (
   <AnimatedSection className="relative pl-8 md:pl-12 group">
     {/* Timeline Dot */}
     <span className="absolute -left-[9px] top-0 w-5 h-5 bg-slate-950 rounded-full border-4 border-blue-600 shadow-[0_0_0_4px_rgba(15,23,42,1)] group-hover:scale-150 group-hover:border-white transition-all duration-300"></span>
-    
+
     <div className="glass-panel p-6 md:p-8 rounded-2xl hover:border-blue-500/30 transition-all duration-300 hover:translate-x-2">
       <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-6 gap-2">
         <div>
@@ -647,7 +704,7 @@ const ExperienceItem = ({ role, company, period, duration, points }) => (
           </div>
         </div>
       </div>
-      
+
       <ul className="space-y-4">
         {points.map((point, i) => (
           <li key={i} className="flex gap-4 text-slate-300 text-base leading-relaxed">
@@ -667,7 +724,7 @@ const Projects = () => (
       <AnimatedSection className="mb-20">
         <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Featured Projects</h2>
         <p className="text-slate-400 max-w-2xl text-lg">
-           Full-stack architectures demonstrating my ability to ship production-ready code.
+          Full-stack architectures demonstrating my ability to ship production-ready code.
         </p>
       </AnimatedSection>
 
@@ -729,7 +786,7 @@ const Projects = () => (
 
 const ProjectCard = ({ title, subtitle, tags, desc, features, impact, isLeft, icon, confidential = false }) => (
   <div className={`flex flex-col ${isLeft ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-12 lg:gap-20 items-center`}>
-    
+
     {/* Visual Side */}
     <AnimatedSection className="w-full lg:w-1/2 group perspective-1000">
       <div className="relative aspect-video bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl transition-all duration-700 transform group-hover:rotate-x-2 group-hover:shadow-[0_20px_50px_-12px_rgba(59,130,246,0.3)] group-hover:border-blue-500/50">
@@ -744,25 +801,25 @@ const ProjectCard = ({ title, subtitle, tags, desc, features, impact, isLeft, ic
             <div className="w-1/4 h-full bg-slate-900/50 rounded-lg animate-pulse"></div>
             <div className="flex-1 h-full space-y-4">
               <div className="w-full h-1/2 bg-slate-900/50 rounded-lg relative overflow-hidden group-hover:bg-blue-900/20 transition-colors flex items-center justify-center">
-                  <div className="text-slate-700 group-hover:text-blue-400 transition-all duration-500 transform group-hover:scale-125 group-hover:rotate-12">
-                      {icon}
-                  </div>
+                <div className="text-slate-700 group-hover:text-blue-400 transition-all duration-500 transform group-hover:scale-125 group-hover:rotate-12">
+                  {icon}
+                </div>
               </div>
               <div className="w-full h-1/3 bg-slate-900/50 rounded-lg"></div>
             </div>
           </div>
         </div>
-        
+
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
           {confidential ? (
             <div className="px-6 py-3 bg-slate-900/90 text-slate-300 font-bold rounded-full transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2 border border-slate-700 cursor-not-allowed shadow-xl">
-                <Lock size={16} className="text-amber-400"/> 
-                <span className="tracking-wide text-sm">Client Confidential</span>
+              <Lock size={16} className="text-amber-400" />
+              <span className="tracking-wide text-sm">Client Confidential</span>
             </div>
           ) : (
             <button className="px-6 py-3 bg-white text-slate-900 font-bold rounded-full transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2 hover:bg-blue-50">
-                View Details <ExternalLink size={16}/>
+              View Details <ExternalLink size={16} />
             </button>
           )}
         </div>
@@ -773,12 +830,12 @@ const ProjectCard = ({ title, subtitle, tags, desc, features, impact, isLeft, ic
     <AnimatedSection className="w-full lg:w-1/2 space-y-6" delay={200}>
       <div>
         <div className="flex items-center gap-3 mb-2">
-           <h4 className="text-blue-400 font-bold tracking-wider uppercase text-sm">{subtitle}</h4>
-           {confidential && (
-             <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/10 text-amber-500 border border-amber-500/20">
-               Confidential
-             </span>
-           )}
+          <h4 className="text-blue-400 font-bold tracking-wider uppercase text-sm">{subtitle}</h4>
+          {confidential && (
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/10 text-amber-500 border border-amber-500/20">
+              Confidential
+            </span>
+          )}
         </div>
         <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 group-hover:text-blue-200 transition-colors">{title}</h3>
         <div className="flex flex-wrap gap-2 mb-6">
@@ -789,7 +846,7 @@ const ProjectCard = ({ title, subtitle, tags, desc, features, impact, isLeft, ic
           ))}
         </div>
       </div>
-      
+
       <p className="text-slate-300 text-lg leading-relaxed">
         {desc}
       </p>
@@ -806,10 +863,10 @@ const ProjectCard = ({ title, subtitle, tags, desc, features, impact, isLeft, ic
       </div>
 
       <div className="flex items-center gap-2 text-emerald-400 font-medium">
-         <div className="p-2 bg-emerald-500/10 rounded-full">
-            <Zap size={18} />
-         </div>
-         Impact: {impact}
+        <div className="p-2 bg-emerald-500/10 rounded-full">
+          <Zap size={18} />
+        </div>
+        Impact: {impact}
       </div>
     </AnimatedSection>
   </div>
@@ -820,12 +877,12 @@ const Contact = () => (
   <section id="contact" className="py-32 px-6 relative overflow-hidden">
     {/* Footer Background Gradients */}
     <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent pointer-events-none"></div>
-    
+
     <div className="max-w-4xl mx-auto text-center relative z-10">
       <AnimatedSection>
         <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">Ready to scale?</h2>
         <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto">
-          I'm currently available for <span className="text-blue-400">Backend</span> and <span className="text-purple-400">DevOps</span> roles. 
+          I'm currently available for <span className="text-blue-400">Backend</span> and <span className="text-purple-400">DevOps</span> roles.
           Let's build something robust together.
         </p>
       </AnimatedSection>
@@ -846,9 +903,9 @@ const Contact = () => (
 
       <AnimatedSection delay={300} className="border-t border-slate-800 pt-10 flex flex-col md:flex-row justify-between items-center text-slate-500 gap-6">
         <div className="flex gap-8">
-           <a href="https://www.linkedin.com/in/yash-dafade-992ab2209/" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">LinkedIn</a>
-           <a href="https://github.com/yashdafade" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">GitHub</a>
-           <a href="#" className="hover:text-white transition-colors">Resume</a>
+          <a href="https://www.linkedin.com/in/yash-dafade-992ab2209/" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">LinkedIn</a>
+          <a href="https://github.com/yashdafade" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">GitHub</a>
+          <a href="#" className="hover:text-white transition-colors">Resume</a>
         </div>
         <div className="text-sm">
           © 2025 Yash Dafade. Crafted with React & Three.js.
@@ -883,7 +940,7 @@ const App = () => {
       <ParticleNetwork />
       <Navbar scrollTo={scrollTo} />
       <Hero scrollTo={scrollTo} />
-      <AboutSection /> 
+      <AboutSection />
       <Skills />
       <Experience />
       <Projects />
